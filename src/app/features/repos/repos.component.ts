@@ -22,8 +22,15 @@ export class ReposComponent {
   constructor(private githubService: GithubService,private router: Router) {}
 
   ngOnInit(): void {
+    this.fetchRepos();
     this.setupSearchControl();
+   
   }
+
+  fetchRepos(): void {
+    this.repos$ = this.githubService.searchRepos()
+  }
+  
 
   setupSearchControl(): void {
     this.repos$ = this.searchControl.valueChanges.pipe(
@@ -39,19 +46,14 @@ export class ReposComponent {
   }
 
   trackByRepoId(index: number, repo: Repo): number {
-    return repo.id;
+    return +repo.id; // Convert id to a number
   }
+  
 
-  searchRepos(): void {
-   /*  const query = this.searchControl.value;
-    this.githubService.searchRepos(query).subscribe(data => {
-      this.repos = data.items;
-      this.filteredRepos = data.items;
-    }); */
-  }
+
 
   viewCommits(repo: Repo): void {
-    //this.router.navigate(['/commits', { repoId: repo.id }]);
+   this.router.navigate(['/commits', { repoId: repo.id }]);
   }
   
 
