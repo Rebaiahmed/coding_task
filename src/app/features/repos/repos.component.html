@@ -1,0 +1,26 @@
+<div class="container mt-3">
+    <div class="row">
+      <div class="col-md-12">
+        <form class="form-inline mb-3">
+          <input type="text" class="form-control mr-2" placeholder="Search Repositories" [formControl]="searchControl">
+        </form>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">Repository Name</th>
+              <th scope="col">Owner Avatar</th>
+              <th scope="col">Creation Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let repo of repos$ | async; trackBy: trackByRepoId" (click)="viewCommits(repo)" style="cursor: pointer;">
+              <td>{{ repo.name }}</td>
+              <td><img [src]="repo.owner.avatar_url" class="img-fluid" width="50" height="50" alt="Avatar"></td>
+              <td>{{ repo.created_at | date }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
