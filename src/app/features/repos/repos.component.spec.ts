@@ -7,8 +7,9 @@ import { By } from '@angular/platform-browser';
 import { Repo } from '@core/models';
 import { GithubService } from '@core/http/github.service';
 import { Router } from '@angular/router';
+import { MockProvider, MockRender } from 'ng-mocks';
 
-fdescribe('ReposComponent', () => {
+describe('ReposComponent', () => {
   let component: ReposComponent;
   let fixture: ComponentFixture<ReposComponent>;
   let mockGithubService: GithubService;
@@ -19,11 +20,38 @@ fdescribe('ReposComponent', () => {
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
     await TestBed.configureTestingModule({
-      declarations: [ReposComponent],
+      declarations: [],
       providers: [
-        { provide: GithubService, useValue: mockGithubService },
-        { provide: Router, useValue: mockRouter },
-      ],
+        //MockProvider(GithubService),
+         MockProvider(GithubService, {
+          searchRepos: () => of( [
+            {
+              id: 1,
+              name: 'angular/angular',
+              full_name: 'angular/angular',
+              description: 'One framework. Mobile & desktop.',
+              stargazers_count: 81914,
+              forks_count: 29634,
+              owner: {
+                login: 'angular',
+                avatar_url: 'https://avatars.githubusercontent.com/u/1316496?v=4', // Example avatar URL
+              },
+            },
+            {
+              id: 2,
+              name: 'angular/cli',
+              full_name: 'angular/cli',
+              description: 'CLI tool for Angular',
+              stargazers_count: 24821,
+              forks_count: 8250,
+              owner: {
+                login: 'angular',
+                avatar_url: 'https://avatars.githubusercontent.com/u/1316496?v=4', // Example avatar URL
+              },
+            },
+          ]),
+        }) 
+      ]
     })
       .compileComponents();
 
@@ -33,10 +61,6 @@ fdescribe('ReposComponent', () => {
   });
 
   afterEach(() => {
-    fixture = null;
-    component = null;
-    mockGithubService = null;
-    mockRouter = null;
   });
 
   it('should create the component', () => {
@@ -46,52 +70,16 @@ fdescribe('ReposComponent', () => {
   it('should initially display an empty list of repos', () => {
     const debugElement: DebugElement = fixture.debugElement;
     const repoList = debugElement.query(By.css('.repo-list')); // Adjust selector if needed
-
     expect(repoList).toBeNull(); // Or expect no repos found message
   });
-/* 
+ 
   it('should search for repos when the search term is at least 2 characters long', fakeAsync(() => {
     const searchTerm = 'angular';
-    const mockRepos: Repo[] = [
-      { id: 1, name: 'angular/angular' },
-      { id: 2, name: 'angular/cli' },
-    ];
-
-    mockGithubService.searchRepos.and.returnValue(of(mockRepos));
     component.searchControl.setValue(searchTerm);
     fixture.detectChanges();
     tick(300); // Simulate debounceTime
-
-    expect(mockGithubService.searchRepos).toHaveBeenCalledWith(searchTerm);
-
-    fixture.whenStable().then(() => {
-      // Assert presence and content of repos after search
-      const debugElement: DebugElement = fixture.debugElement;
-      const repoList = debugElement.query(By.css('.repo-list')); // Adjust selector if needed
-
-      expect(repoList).not.toBeNull(); // Or expect number of repos displayed
-      // Add assertions for specific repo details if displayed
-    });
-  })); */
-
- /*  it('should handle API errors gracefully and display an error message', fakeAsync(() => {
-    const error = new Error('API request failed');
-    mockGithubService.searchRepos.and.returnValue(throwError(error));
-    const searchTerm = 'error-term';
-
-    component.searchControl.setValue(searchTerm);
-    fixture.detectChanges();
-    tick(300); // Simulate debounceTime
-
-    expect(mockGithubService.searchRepos).toHaveBeenCalledWith(searchTerm);
-
-    fixture.whenStable().then(() => {
-      // Assert error message displayed
-      const debugElement: DebugElement = fixture.debugElement;
-      const errorMessage = debugElement.query(By.css('.error-message')); // Adjust selector if needed
-
-      expect(errorMessage).not.toBeNull();
-      // Add assertions for specific error message content
-    });
-  })); */
+    expect(component.repos.length).toEqual(2);
+  })); 
 });
+
+

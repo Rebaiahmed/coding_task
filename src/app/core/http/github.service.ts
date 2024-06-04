@@ -30,7 +30,17 @@ export class GithubService {
 
  
 
-  getCommitsByRepoId(repoId: string): Observable<any> {
-    return this.http.get(`${environment.apiUrl}/repositories/${repoId}/commits`);
+  getCommitsByRepoId(repoId: string, searchText?: string): Observable<any> {
+    let endpoint = `${environment.apiUrl}/repositories/${repoId}/commits`;
+    if (searchText) {
+      // Construct search parameters based on GitHub API documentation
+      endpoint += `?q=${searchText}`;
+    }
+    return this.http.get(endpoint).pipe(
+      catchError(error => {
+        return throwError('Error fetching commits. Please try again later.');
+      })
+    );
   }
+  
 }

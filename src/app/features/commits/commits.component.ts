@@ -1,12 +1,12 @@
-import { Component, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
-import { Commit } from '@core/models/commit';
-import { GithubService } from '@core/http/github.service';
-import { Observable, catchError, debounceTime, distinctUntilChanged, filter, switchMap, tap } from 'rxjs';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { GithubService } from '@core/http/github.service';
+import { Commit } from '@core/models/commit';
+import { catchError, debounceTime, distinctUntilChanged, filter, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'app-commits',
@@ -20,6 +20,7 @@ export class CommitsComponent {
   commits: Commit[]= [];
   searchControl = new FormControl('');
   destroyRef = inject(DestroyRef);
+  repoId='';
 
 
   constructor(private route: ActivatedRoute, private githubService: GithubService) { }
@@ -34,7 +35,7 @@ export class CommitsComponent {
     this.route.paramMap.pipe(
       switchMap(params => {
         const repoId = params.get('repoId');
-        console.log('repo id',repoId)
+        this.repoId=repoId;
         return this.githubService.getCommitsByRepoId(repoId).pipe(
           catchError(error => {
             console.error('Error fetching commits:', error);
@@ -55,9 +56,8 @@ export class CommitsComponent {
       distinctUntilChanged(),
       filter(query => query.length >= 2),
       tap(query => console.log(`Searching for: ${query}`)),
-      switchMap(query => this.githubService.getCommitsByRepoId(query)),
+      switchMap(query => this.githubService.getCommitsByRepoId( this.repoId,query)),
       catchError(error => {
-        console.error('Error searching commits:', error);
         return [];
       })
     ).subscribe((commits)=>{

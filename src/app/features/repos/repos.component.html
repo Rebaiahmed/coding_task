@@ -12,7 +12,7 @@
               <th scope="col">Creation Date</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody class=".repo-list">
             <tr *ngFor="let repo of repos; trackBy: trackByRepoId" (click)="viewCommits(repo)" style="cursor: pointer;">
               <td>{{ repo.name }}</td>
               <td><img [src]="repo.owner.avatar_url" class="img-fluid" width="50" height="50" alt="Avatar"></td>

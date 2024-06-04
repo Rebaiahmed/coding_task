@@ -12,7 +12,9 @@ describe('GithubService', () => {
  
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      imports: [ HttpClientTestingModule ]
+    });
     service = TestBed.inject(GithubService);
     httpMock = TestBed.inject(HttpTestingController);
     httpClient = TestBed.inject(HttpClient);
@@ -28,7 +30,6 @@ describe('GithubService', () => {
   });
 
   describe('searchRepos', () => {
-
 
     it('should return searched repositories with query parameter', fakeAsync(() => {
       const query = 'angular';
