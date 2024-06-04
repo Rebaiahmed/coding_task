@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError, map, throwError } from 'rxjs';
-import { environment } from 'src/environments/environment';
+import { Observable, catchError, identity, map, tap, throwError } from 'rxjs';
+import { environment } from '@environment/environment';
+import { Repo } from '@core/models';
+
 
 @Injectable({
   providedIn: 'root'
@@ -17,9 +19,10 @@ export class GithubService {
     if (stars) params += `+stars:>=${stars}`;
     const endpoint = params ? `${environment.apiUrl}/search/repositories?${params}` : `${environment.apiUrl}/repositories`;
     return this.http.get(endpoint).pipe(
-      map((response: any) => response.items),
+      tap(console.log),
+      // Conditionally apply map based on search term
+      query ? map((response) => response.items) : identity, // Use identity operator for non-search cases
       catchError(error => {
-        console.error('Error fetching repositories:', error);
         return throwError('Error fetching repositories. Please try again later.');
       })
     );

@@ -1,11 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { Commit } from '@core/commit';
+import { Commit } from '@core/models/commit';
 import { GithubService } from '@core/http/github.service';
 import { Observable, catchError, debounceTime, distinctUntilChanged, filter, switchMap, tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-commits',
@@ -16,8 +17,9 @@ import { Observable, catchError, debounceTime, distinctUntilChanged, filter, swi
 })
 export class CommitsComponent {
 
-  commits$: Observable<Commit[]>;
+  commits: Commit[]= [];
   searchControl = new FormControl('');
+  destroyRef = inject(DestroyRef);
 
 
   constructor(private route: ActivatedRoute, private githubService: GithubService) { }
@@ -29,21 +31,26 @@ export class CommitsComponent {
   }
 
   handleRouteChanges(): void {
-    this.commits$ = this.route.paramMap.pipe(
+    this.route.paramMap.pipe(
       switchMap(params => {
         const repoId = params.get('repoId');
+        console.log('repo id',repoId)
         return this.githubService.getCommitsByRepoId(repoId).pipe(
           catchError(error => {
             console.error('Error fetching commits:', error);
             return [];
           })
         );
-      })
-    );
+      }),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe((commits)=>{
+      this.commits=commits;
+    })
   }
 
   setupSearchControl(): void {
-    this.commits$ = this.searchControl.valueChanges.pipe(
+    this.searchControl.valueChanges.pipe(
+      takeUntilDestroyed(this.destroyRef),
       debounceTime(300),
       distinctUntilChanged(),
       filter(query => query.length >= 2),
@@ -53,7 +60,9 @@ export class CommitsComponent {
         console.error('Error searching commits:', error);
         return [];
       })
-    );
+    ).subscribe((commits)=>{
+      this.commits=commits;
+    })
   }
 
 }

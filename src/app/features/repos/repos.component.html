@@ -13,7 +13,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let repo of repos$ | async; trackBy: trackByRepoId" (click)="viewCommits(repo)" style="cursor: pointer;">
+            <tr *ngFor="let repo of repos; trackBy: trackByRepoId" (click)="viewCommits(repo)" style="cursor: pointer;">
               <td>{{ repo.name }}</td>
               <td><img [src]="repo.owner.avatar_url" class="img-fluid" width="50" height="50" alt="Avatar"></td>
               <td>{{ repo.created_at | date }}</td>
