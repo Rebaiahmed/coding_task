@@ -4,8 +4,8 @@ import { ReposComponent } from './features/repos/repos.component';
 import { CommitsComponent } from './features/commits/commits.component';
 
 const routes: Routes = [
-  { path: 'repos', component: ReposComponent },
-  { path: 'commits', component:CommitsComponent },
+  { path: 'repos', loadComponent: () =>import("./features/repos/repos.component").then((m) => m.ReposComponent), },
+  { path: 'commits',  loadComponent: () =>import("./features/commits/commits.component").then((m) => m.CommitsComponent), },
   { path: '', redirectTo: '/repos', pathMatch: 'full' },
 ];
 
