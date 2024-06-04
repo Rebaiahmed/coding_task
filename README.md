@@ -1,13 +1,12 @@
-# Github Explorer
+# Github coding task
 
 ## Introduction
 
-Github Explorer is a web application built with Angular that allows users to explore repositories on Github. Users can search for repositories by name, view repository details, and see the commits for a selected repository.
+Gitalo is a web application built with Angular that allows users to explore repositories on Github. Users can search for repositories by name, view repository details, and see the commits for a selected repository.
 
 ## Features
 
 - **Repository Search**: Real-time search functionality to find repositories on Github.
-- **Repository Details**: Displays repository name, owner's avatar, and creation date.
 - **View Commits**: Provides a list of commits for a selected repository.
 - **Responsive Design**: Built with Bootstrap for a mobile-friendly experience.
 
@@ -21,16 +20,15 @@ Github Explorer is a web application built with Angular that allows users to exp
 
 ## Screenshots
 
-![Repository Search](/screenshots/repo-search.png)
+![Repository Search](src/assets/screenShot1.png)
 *Figure 1: Repository Search*
 
-![Repository Details](/screenshots/repo-details.png)
-*Figure 2: Repository Details*
 
-![Commits](/screenshots/commits.png)
+
+![Commits](src/assets/screenshot2.png)
 *Figure 3: Commits*
 
-## Conclusion
 
-Github Explorer provides a user-friendly interface for exploring Github repositories and their commits. It follows best practices in Angular development and offers a responsive design for a seamless user experience.
+
+
 
